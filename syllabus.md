@@ -1,7 +1,7 @@
 ---
 title: "Syllabus — [Class Name] ([Semester YYYY])"
 description: "Detailed syllabus, evaluation, and policies"
-draft: false
+draft: true
 tags:
   - syllabus
   - class

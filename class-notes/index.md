@@ -1,7 +1,7 @@
 ---
 title: "Class Notes"
 description: "Session-by-session notes"
-draft: false
+draft: true
 tags:
   - class-notes
   - class
