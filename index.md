@@ -51,16 +51,16 @@ By the end of this block, you will be able to:
   - [01 – Browser AI Overview and Landscape](./content/01-browser-ai-overview-and-landscape.md)
   - [02 – ONNX Runtime Web Foundations](./content/02-onnx-runtime-web-foundations.md)
   - [03 – MediaPipe for Browser Vision](./content/03-mediapipe-for-browser-vision.md)
-  - [04 – Transformers.js for Browser NLP](./content/03-transformers-js-for-browser-nlp.md)
+  - [04 – Transformers.js for Browser NLP](./content/04-transformers-js-for-browser-nlp.md)
 
 ## Part 2: Practice + Reusable Scaffolding
 
 **Format:** Hands-on workshop
 
 - **Practice notes:**
-  - [05 – WebLLM Browser Chat](./content/04-webllm-browser-chat.md)
-  - [06 – Model Loading Patterns and Shared Scaffolding](./content/05-model-loading-patterns-and-shared-scaffolding.md)
-  - [07 – Comparison, Practice, and Limitations](./content/06-comparison-practice-and-limitations.md)
+  - [05 – WebLLM Browser Chat](./content/05-webllm-browser-chat.md)
+  - [06 – Model Loading Patterns and Shared Scaffolding](./content/06-model-loading-patterns-and-shared-scaffolding.md)
+  - [07 – Comparison, Practice, and Limitations](./content/07-comparison-practice-and-limitations.md)
 
 - **Sample demos:**
   - [01 – Transformers.js Sentiment Demo](./samples/01-transformersjs-sentiment-demo.html)
@@ -94,18 +94,20 @@ By the end of this block, you will be able to:
 
 ## Running the Samples
 
-The sample demos are designed to run **locally first** using a static server. This is more reliable than opening files directly with `file://` and makes model loading easier to debug.
+The sample demos are designed to run **locally first** using a static server. This is more reliable than opening files directly with `file://` and makes model loading easier to debug. 
 
-Typical local workflow:
+Clone or download the code locally:
+
+```bash
+git clone https://github.com/gu-ma/block-ai-browser
+```
+
+Navigate to the `samples` directory and start a server (you can also use live-server):
 
 ```bash
 python -m http.server 8000
 ```
 
-Then open the sample in your browser via `http://localhost:8000/...`.
+Then open the sample in your browser via `http://localhost:8000/...`
 
-GitHub Pages can be used later for sharing a stable demo, but the primary teaching workflow in this block is local execution and iteration.
-
-## Class Notes
-
-- [Class Notes](./class-notes/)
+GitHub Pages could be used later for sharing a stable demo, but the primary teaching workflow in this block is local execution and iteration.
