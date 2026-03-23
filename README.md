@@ -1,84 +1,96 @@
 
-> ➡️ Start here: [Usage](./usage.md)
+# Block: AI – Running AI in the Browser
 
-# [Class Name] — [Semester YYYY]
+This block introduces how to run machine-learning models directly in the browser. Students move from the big-picture shift from server-side AI to client-side AI, into practical workflows with ONNX Runtime Web, Transformers.js, and WebLLM. The emphasis is on understanding the trade-offs, loading patterns, and user experience constraints that shape real browser AI demos.
 
-Welcome to the class site.
+The block is designed for learners who are already comfortable with HTML, CSS, and basic JavaScript, and want to understand how modern browser inference works in practice.
 
-This page is the landing page of the Quartz `content/` folder and composes reusable learning blocks.
+## Learning Objectives
 
-## Quick Links
+By the end of this block, you will be able to:
 
-- [Syllabus](syllabus.md)
-- [Class Notes](./class-notes/)
+- Explain why developers run AI in the browser and when this approach makes sense
+- Describe the role of ONNX, model export, and browser inference backends such as WebGPU and WebAssembly
+- Build a simple NLP demo with Transformers.js using a Hugging Face-compatible model
+- Build a minimal browser chat demo with WebLLM and explain its practical limitations
+- Compare browser AI libraries and choose a suitable stack for a classroom or prototype project
 
-## Course Overview
+## Session Timeline Overview
 
-**Format:** [X sessions] × [X hours]  
-**Audience:** [e.g. BA students / continuing education / mixed level]  
-**Prerequisites:** [None / basic Python / statistics / etc.]
+- **Part 1 (Lecture + Discussion, ~35–45 min):**
+  - From server-side ML to browser-side ML
+  - Browser runtime constraints and opportunities
+  - ONNX Runtime Web foundations
+- **Part 2 (Hands-on Studio, ~60–75 min):**
+  - Transformers.js text demo
+  - ONNX Runtime Web reusable inference scaffold
+  - WebLLM minimal chat demo
+- **Debrief (10–15 min):**
+  - Performance expectations, hardware limits, and tool-selection trade-offs
 
-Short class description:
+## Part 1: Concepts + Technical Foundations
 
-> [Add a 3–5 line summary of the class goals, scope, and teaching approach.]
+**Format:** Lecture + guided discussion
 
-## 1. What you are going to learn
+- **Core notes:**
+  - [01 – Browser AI Overview and Landscape](./content/01-browser-ai-overview-and-landscape.md)
+  - [02 – ONNX Runtime Web Foundations](./content/02-onnx-runtime-web-foundations.md)
+  - [03 – MediaPipe for Browser Vision](./content/03-mediapipe-for-browser-vision.md)
+  - [04 – Transformers.js for Browser NLP](./content/03-transformers-js-for-browser-nlp.md)
 
-### Professional competences
+## Part 2: Practice + Reusable Scaffolding
 
-- [Professional competence 1]
-- [Professional competence 2]
-- [Professional competence 3]
+**Format:** Hands-on workshop
 
-### Methodological competences
+- **Practice notes:**
+  - [05 – WebLLM Browser Chat](./content/04-webllm-browser-chat.md)
+  - [06 – Model Loading Patterns and Shared Scaffolding](./content/05-model-loading-patterns-and-shared-scaffolding.md)
+  - [07 – Comparison, Practice, and Limitations](./content/06-comparison-practice-and-limitations.md)
 
-- [Methodological competence 1]
-- [Methodological competence 2]
-- [Methodological competence 3]
+- **Sample demos:**
+  - [01 – Transformers.js Sentiment Demo](./samples/01-transformersjs-sentiment-demo.html)
+  - [02 – ONNX Runtime Web Image Classification Template](./samples/02-onnx-runtime-web-image-classification-template.html)
+  - [03 – MediaPipe Hand Detection Demo](./samples/03-mediapipe-hand-landmarker-demo.html)
+  - [04 – WebLLM Chat Template](./samples/04-webllm-chat-template.html)
+  - [Samples README](./samples/README.md)
 
-### Personal competences
+## Preparation
 
-- [Personal competence 1]
-- [Personal competence 2]
-- [Personal competence 3]
+- Read the notes in order from 01 → 06
+- Make sure you can run a local static web server such as `python -m http.server 8000`
+- Use a recent version of Chrome or Edge for WebGPU-based demos
+- Be ready to discuss where browser AI is preferable to API-based inference
 
-## Block Composition
+## Going Further
 
-The class is composed from independent block repositories added in `content/blocks/` as git submodules.
-
-| Week | Block             | Topic           | Slides                                                              |
-| ---- | ----------------- | --------------- | ------------------------------------------------------------------- |
-| 01   | `block-ai-intro`  | [Topic summary] | [slides-ai-intro](https://slides.yourdomain.com/slides-ai-intro/)   |
-| 02   | `block-ml-basics` | [Topic summary] | [slides-ml-basics](https://slides.yourdomain.com/slides-ml-basics/) |
-| 03   | `block-ethics`    | [Topic summary] | [slides-ethics](https://slides.yourdomain.com/slides-ethics/)       |
-| ..   | `block-...`       | [...]           | [...]                                                               |
-
-Notes:
-
-- Blocks are maintained in their own `block-*` repositories.
-- Slides are maintained in separate `slides-*` repositories.
-- This class repo links to slides by URL only.
-
-## Evaluation
-
-- **Participation:** [X%]
-- **Assignments / Labs:** [X%]
-- **Project / Exam:** [X%]
-
-Provide detailed grading rules in [`syllabus.md`](syllabus.md).
+- [Transformers.js Documentation](https://huggingface.co/docs/transformers.js/)
+- [ONNX Runtime Web Documentation](https://onnxruntime.ai/docs/tutorials/web/)
+- [WebLLM Documentation](https://webllm.mlc.ai/)
+- [Hugging Face Model Hub](https://huggingface.co/models)
+- [ONNX Overview](https://onnx.ai/)
 
 ## Tools
 
-- [Tool / Platform 1]
-- [Tool / Platform 2]
-- [Tool / Platform 3]
+- [Transformers.js](https://huggingface.co/docs/transformers.js/)
+- [ONNX Runtime Web](https://onnxruntime.ai/)
+- [WebLLM](https://webllm.mlc.ai/)
+- [Hugging Face](https://huggingface.co/)
+- [Chrome](https://www.google.com/chrome/) / [Microsoft Edge](https://www.microsoft.com/edge)
 
-## Academic Integrity
+## Running the Samples
 
-Use external code, datasets, and references responsibly:
+The sample demos are designed to run **locally first** using a static server. This is more reliable than opening files directly with `file://` and makes model loading easier to debug.
 
-- Cite all reused code and resources.
-- Clearly distinguish your own work from borrowed material.
-- Acknowledge all collaborators and support received.
+Typical local workflow:
 
-Add your institution-specific policy details in [`syllabus.md`](syllabus.md).
+```bash
+python -m http.server 8000
+```
+
+Then open the sample in your browser via `http://localhost:8000/...`.
+
+GitHub Pages can be used later for sharing a stable demo, but the primary teaching workflow in this block is local execution and iteration.
+
+## Class Notes
+
+- [Class Notes](./class-notes/)
