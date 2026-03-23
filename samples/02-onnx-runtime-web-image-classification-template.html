@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ONNX Runtime Web Beginner Template</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 760px;
+        margin: 40px auto;
+        padding: 0 16px;
+        line-height: 1.5;
+      }
+      button {
+        padding: 12px;
+        font-size: 16px;
+        margin-top: 12px;
+      }
+      .box {
+        margin-top: 16px;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+      code {
+        background: #f4f4f4;
+        padding: 2px 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>ONNX Runtime Web Image Classification Template</h1>
+    <p>
+      This beginner template assumes the teacher provides one small image-classification ONNX model, its input size,
+      and a label list. A small MobileNet or SqueezeNet ONNX model is a good first classroom choice.
+    </p>
+
+    <div class="box">
+      <strong>Before students edit anything:</strong>
+      <ul>
+        <li>Use one tested teacher-provided <code>.onnx</code> model.</li>
+        <li>Confirm the expected input tensor shape, for example <code>[1, 3, 224, 224]</code>.</li>
+        <li>Keep the first goal simple: load the model and print raw outputs.</li>
+      </ul>
+    </div>
+
+    <button id="load">Load Model</button>
+    <button id="run" disabled>Run Template Inference</button>
+
+    <div class="box">
+      <strong>Status:</strong>
+      <div id="status">Idle.</div>
+    </div>
+
+    <div class="box">
+      <strong>Output:</strong>
+      <pre id="output">No output yet.</pre>
+    </div>
+
+    <script type="module">
+      import * as ort from 'https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js'
+
+      const MODEL_URL = './models/teacher-provided-mobilenet-or-squeezenet.onnx'
+      const INPUT_NAME = 'input'
+
+      const statusEl = document.getElementById('status')
+      const outputEl = document.getElementById('output')
+      const loadButton = document.getElementById('load')
+      const runButton = document.getElementById('run')
+
+      let session = null
+
+      async function loadModel(url) {
+        statusEl.textContent = 'Loading ONNX model...'
+        session = await ort.InferenceSession.create(url, {
+          executionProviders: ['webgpu', 'wasm'],
+        })
+        statusEl.textContent = 'Model ready.'
+        runButton.disabled = false
+      }
+
+      async function runModel() {
+        if (!session) return
+
+        statusEl.textContent = 'Creating input tensor...'
+        const data = new Float32Array(1 * 3 * 224 * 224).fill(0)
+        const tensor = new ort.Tensor('float32', data, [1, 3, 224, 224])
+
+        statusEl.textContent = 'Running inference...'
+        const outputs = await session.run({ [INPUT_NAME]: tensor })
+        outputEl.textContent = JSON.stringify(outputs, null, 2)
+        statusEl.textContent = 'Inference complete.'
+      }
+
+      loadButton.addEventListener('click', async () => {
+        loadButton.disabled = true
+        try {
+          await loadModel(MODEL_URL)
+        } catch (error) {
+          statusEl.textContent = `Model load failed: ${error.message}`
+          outputEl.textContent = [
+            'This template expects a real teacher-provided ONNX model file.',
+            'Start with a small MobileNet or SqueezeNet-style classifier.',
+            'Update MODEL_URL, INPUT_NAME, and preprocessing only after the teacher confirms the model details.',
+          ].join('\n')
+          loadButton.disabled = false
+        }
+      })
+
+      runButton.addEventListener('click', async () => {
+        runButton.disabled = true
+        try {
+          await runModel()
+        } catch (error) {
+          statusEl.textContent = `Inference failed: ${error.message}`
+        } finally {
+          runButton.disabled = false
+        }
+      })
+    </script>
+  </body>
+</html>

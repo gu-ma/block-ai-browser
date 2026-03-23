@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebLLM Chat Template</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 760px;
+        margin: 40px auto;
+        padding: 0 16px;
+        line-height: 1.5;
+      }
+      input, button {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        margin-top: 12px;
+      }
+      .box {
+        margin-top: 16px;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+      .warning {
+        background: #fff8e1;
+      }
+      #output {
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>WebLLM Chat Template</h1>
+    <p>This is a teaching scaffold for a local browser chat demo.</p>
+
+    <div class="box warning">
+      <strong>Note:</strong>
+      WebLLM works best on capable devices and recent browsers with WebGPU support. Model names and exact APIs may evolve over time.
+    </div>
+
+    <input id="prompt" value="Explain why running AI in the browser can improve privacy." />
+    <button id="send" disabled>Loading model...</button>
+
+    <div class="box">
+      <strong>Status:</strong>
+      <div id="status">Initializing...</div>
+    </div>
+
+    <div class="box">
+      <strong>Reply:</strong>
+      <div id="output">No response yet.</div>
+    </div>
+
+    <script type="module">
+      const statusEl = document.getElementById('status')
+      const outputEl = document.getElementById('output')
+      const sendButton = document.getElementById('send')
+      const promptEl = document.getElementById('prompt')
+
+      let engine = null
+
+      async function initModel() {
+        try {
+          statusEl.textContent = 'Load the WebLLM package and initialize a small model here.'
+
+          // Teaching placeholder:
+          // Example pseudo-flow only; update to the current WebLLM API before classroom use.
+          // const webllm = await import('https://esm.run/@mlc-ai/web-llm')
+          // engine = await webllm.CreateMLCEngine('Llama-3.2-1B-Instruct-q4f32_1-MLC')
+
+          await new Promise((resolve) => setTimeout(resolve, 1000))
+          engine = { ready: true }
+
+          statusEl.textContent = 'Template ready. Replace the placeholder init with a current WebLLM model load.'
+          sendButton.disabled = false
+          sendButton.textContent = 'Send Prompt'
+        } catch (error) {
+          statusEl.textContent = `Initialization failed: ${error.message}`
+        }
+      }
+
+      async function chat(prompt) {
+        if (!engine) throw new Error('Model engine not ready.')
+
+        return [
+          'This is a placeholder reply.',
+          'Replace the chat() function with a real WebLLM generation call.',
+          `Your prompt was: ${prompt}`,
+        ].join('\n\n')
+      }
+
+      sendButton.addEventListener('click', async () => {
+        sendButton.disabled = true
+        outputEl.textContent = 'Generating reply...'
+        statusEl.textContent = 'Running local chat inference...'
+
+        try {
+          const reply = await chat(promptEl.value)
+          outputEl.textContent = reply
+          statusEl.textContent = 'Reply complete.'
+        } catch (error) {
+          statusEl.textContent = `Generation failed: ${error.message}`
+          outputEl.textContent = 'Update this template to the latest WebLLM API and a supported model.'
+        } finally {
+          sendButton.disabled = false
+        }
+      })
+
+      initModel()
+    </script>
+  </body>
+</html>

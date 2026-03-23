@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediaPipe Hand Landmarker Demo</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 900px;
+        margin: 24px auto;
+        padding: 0 16px;
+        line-height: 1.5;
+      }
+      video, canvas {
+        width: 100%;
+        max-width: 720px;
+        border-radius: 8px;
+        display: block;
+      }
+      .stage {
+        position: relative;
+        width: 100%;
+        max-width: 720px;
+      }
+      #video, #canvas {
+        position: absolute;
+        inset: 0;
+      }
+      #video { position: relative; }
+      button { padding: 12px; margin: 12px 0; font-size: 16px; }
+      .box { margin-top: 16px; padding: 12px; border: 1px solid #ccc; border-radius: 8px; }
+    </style>
+  </head>
+  <body>
+    <h1>MediaPipe Hand Landmarker Demo</h1>
+    <p>A beginner-friendly webcam demo using vanilla JS. Allow camera access when your browser asks.</p>
+    <button id="start">Start Camera + Detection</button>
+
+    <div class="stage">
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <div class="box">
+      <strong>Status:</strong>
+      <div id="status">Idle.</div>
+    </div>
+
+    <div class="box">
+      <strong>What is happening?</strong>
+      <div id="summary">The demo will detect hand landmarks and draw them on top of the webcam feed.</div>
+    </div>
+
+    <script type="module">
+      import {
+        FilesetResolver,
+        HandLandmarker,
+      } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest'
+
+      const video = document.getElementById('video')
+      const canvas = document.getElementById('canvas')
+      const ctx = canvas.getContext('2d')
+      const statusEl = document.getElementById('status')
+      const summaryEl = document.getElementById('summary')
+      const startButton = document.getElementById('start')
+
+      let handLandmarker = null
+      let running = false
+
+      function drawPoint(x, y, color = '#ff3b30') {
+        ctx.beginPath()
+        ctx.arc(x, y, 4, 0, Math.PI * 2)
+        ctx.fillStyle = color
+        ctx.fill()
+      }
+
+      async function setupModel() {
+        statusEl.textContent = 'Loading MediaPipe vision files...'
+        const vision = await FilesetResolver.forVisionTasks(
+          'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm'
+        )
+
+        statusEl.textContent = 'Loading hand landmarker model...'
+        handLandmarker = await HandLandmarker.createFromOptions(vision, {
+          baseOptions: {
+            modelAssetPath:
+              'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
+          },
+          numHands: 2,
+          runningMode: 'VIDEO',
+        })
+      }
+
+      async function setupCamera() {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true })
+        video.srcObject = stream
+        await video.play()
+        canvas.width = video.videoWidth
+        canvas.height = video.videoHeight
+      }
+
+      function renderLoop() {
+        if (!running) return
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        const result = handLandmarker.detectForVideo(video, performance.now())
+
+        if (result.landmarks && result.landmarks.length > 0) {
+          summaryEl.textContent = `Detected ${result.landmarks.length} hand(s).`
+          for (const hand of result.landmarks) {
+            for (const point of hand) {
+              drawPoint(point.x * canvas.width, point.y * canvas.height)
+            }
+          }
+        } else {
+          summaryEl.textContent = 'No hands detected right now. Try moving one hand into the frame.'
+        }
+
+        requestAnimationFrame(renderLoop)
+      }
+
+      startButton.addEventListener('click', async () => {
+        startButton.disabled = true
+        try {
+          await setupModel()
+          await setupCamera()
+          running = true
+          statusEl.textContent = 'Detection running.'
+          renderLoop()
+        } catch (error) {
+          statusEl.textContent = `Setup failed: ${error.message}`
+          startButton.disabled = false
+        }
+      })
+    </script>
+  </body>
+</html>

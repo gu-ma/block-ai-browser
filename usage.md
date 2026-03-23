@@ -2,11 +2,11 @@
 draft: true # Do not publish
 ---
 
-# How to Use This Class Content Template
+# How to Use This Browser AI Block
 
-This folder is the **`content/` template used inside a Quartz class repository**.
+This block is a reusable teaching unit about **running AI models directly in the browser**.
 
-It is not a standalone class repo by itself. Instead, it provides the markdown structure that Quartz will publish for one class site.
+It combines short conceptual notes with runnable HTML/JavaScript demos so learners can move from explanation to hands-on experimentation quickly.
 
 > [!WARNING]
 > This template auto-generates `README.md` from `index.md` on push (via GitHub Actions).
@@ -33,74 +33,56 @@ git pull
 
 This avoids "branch is behind" / non-fast-forward errors.
 
-## Intended Architecture
+## Structure
 
-- **Blocks (`block-*`)**: markdown-only repositories (reusable learning units)
-- **Slides (`slides-*`)**: Slidev-only repositories (independent deployment)
-- **Classes (`class-*`)**: Quartz repositories that compose blocks via submodules
+- **index.md**: main block overview and teaching roadmap
+- **content/**: sequenced lesson notes for the block
+- **samples/**: runnable HTML/JS demos
+- **resources/**: optional supplementary materials, links, or assets
+- **class-notes/**: instructor-specific notes or adaptations
 
-Dependency flow:
+## Recommended Teaching Workflow
 
-`Blocks → Classes` (technical)  
-`Blocks → Slides` (conceptual only)
+1. Start with the overview in `index.md`
+2. Work through the content notes in order
+3. Run the matching demos from `samples/`
+4. Ask students to modify the demos during the hands-on tasks
 
-No circular dependencies.
+## Running the Samples Locally
 
-## `content/` Structure
-
-- **index.md**: Class landing page
-- **syllabus.md**: Class syllabus and roadmap
-- **blocks/**: Block repositories added as git submodules
-- **class-notes/**: Instructor/session notes specific to this class
-
-Example inside a Quartz class repo:
-
-```text
-class-name/
-├── quartz.config.ts
-├── package.json
-└── content/
-    ├── index.md
-    ├── syllabus.md
-    ├── blocks/
-    │   ├── block-ai-intro/      (submodule)
-    │   ├── block-ml-basics/     (submodule)
-    │   └── block-ethics/        (submodule)
-    └── class-notes/
-        └── session1.md
-```
-
-## Adding Block Submodules
-
-From the **class repo root** ( inside `content/`), add each block like this:
+Use a local static server from the block root:
 
 ```bash
-git submodule add <repo-url> blocks/block-ai-intro
+python -m http.server 8000
 ```
 
-Repeat for each required block.
+Then visit the sample in a browser such as Chrome or Edge:
 
-## Slides Integration
-
-Slides live in separate `slides-*` repositories and deploy independently.
-
-- Do **not** embed Slidev sources in this class template.
-- Link slides from markdown using their deployed URL, for example:
-
-```md
-[Presentation](https://subdomain.yourdomain.com/slides-ai-intro/)
+```text
+http://localhost:8000/samples/01-transformersjs-sentiment-demo.html
 ```
 
-## Publishing Conventions
+Why local-first:
 
-Typical runtime URLs:
+- avoids `file://` loading problems
+- makes model downloads and paths easier to debug
+- works better for browser inference experiments
+- keeps the workflow simple for classroom editing
 
-- `subdomain.yourdomain.com/class-*`
-- `subdomain.yourdomain.com/slides-*`
+## GitHub Pages vs Local
 
-One DNS entry can serve both class and slide sites under different paths.
+- **Local** is the primary teaching path
+- **GitHub Pages** is useful later for sharing a stable demo URL
+
+If you publish samples online, keep paths relative and test browser compatibility carefully.
+
+## Teaching Notes
+
+- Prefer recent Chrome or Edge for WebGPU demos
+- Be explicit about first-load delays and model download size
+- Encourage learners to compare browser latency, privacy, and offline advantages against API-based workflows
+- Remind students that WebLLM demos depend heavily on device GPU/CPU capability
 
 ---
 
-Keep this `content/` folder focused on class composition and notes.
-Keep blocks and slides in their own repositories for long-term reuse and low maintenance.
+Keep this block focused on practical browser-AI literacy: model loading, async flows, UX constraints, and tool selection.

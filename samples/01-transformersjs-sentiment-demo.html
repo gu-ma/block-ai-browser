@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transformers.js Sentiment Demo</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 760px;
+        margin: 40px auto;
+        padding: 0 16px;
+        line-height: 1.5;
+      }
+      textarea, button {
+        width: 100%;
+        margin-top: 12px;
+        font-size: 16px;
+      }
+      textarea {
+        min-height: 120px;
+        padding: 12px;
+      }
+      button {
+        padding: 12px;
+      }
+      .box {
+        margin-top: 16px;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+      .muted {
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Transformers.js Sentiment Demo</h1>
+    <p class="muted">Run this page through a local static server. First model load may take time.</p>
+
+    <label for="text">Enter text:</label>
+    <textarea id="text">Running AI in the browser feels surprisingly accessible.</textarea>
+    <button id="run" disabled>Loading model...</button>
+
+    <div class="box">
+      <strong>Status:</strong>
+      <div id="status">Preparing model...</div>
+    </div>
+
+    <div class="box">
+      <strong>Result:</strong>
+      <pre id="output">No result yet.</pre>
+    </div>
+
+    <script type="module">
+      import { pipeline } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2'
+
+      const statusEl = document.getElementById('status')
+      const outputEl = document.getElementById('output')
+      const runButton = document.getElementById('run')
+      const textEl = document.getElementById('text')
+
+      let classifier = null
+
+      async function init() {
+        try {
+          statusEl.textContent = 'Loading sentiment model...'
+          classifier = await pipeline('sentiment-analysis')
+          statusEl.textContent = 'Model ready.'
+          runButton.disabled = false
+          runButton.textContent = 'Run Sentiment Analysis'
+        } catch (error) {
+          statusEl.textContent = `Failed to load model: ${error.message}`
+          outputEl.textContent = 'Check your connection and console for details.'
+        }
+      }
+
+      runButton.addEventListener('click', async () => {
+        if (!classifier) return
+
+        runButton.disabled = true
+        statusEl.textContent = 'Running inference...'
+        outputEl.textContent = 'Working...'
+
+        try {
+          const results = await classifier(textEl.value)
+          const top = results[0]
+          outputEl.textContent = `label: ${top.label}\nscore: ${top.score.toFixed(4)}\n\nraw:\n${JSON.stringify(results, null, 2)}`
+          statusEl.textContent = 'Inference complete.'
+        } catch (error) {
+          statusEl.textContent = `Inference failed: ${error.message}`
+          outputEl.textContent = 'Try a shorter input or reload the page.'
+        } finally {
+          runButton.disabled = false
+        }
+      })
+
+      init()
+    </script>
+  </body>
+</html>
